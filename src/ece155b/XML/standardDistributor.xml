@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<root>
+    <Distributor>
+        <Information>
+            <CompanyName></CompanyName>
+            <CompanyConatac></CompanyConatac>
+            <CompanyAddress></CompanyAddress>
+        </Information>
+        <Stock>
+            <StockItem>
+                <Item>
+                    <ItmeID></ItmeID>
+                    <ItemName></ItemName>
+                    <ItemBrand></ItemBrand>
+                    <ItemPrice></ItemPrice>
+                </Item>
+                <Quantity></Quantity>
+            </StockItem>
+        </Stock>
+        <ProviderContact>
+            <Contact>
+                <Name></Name>
+                <URL></URL>
+                <Port></Port>            
+            </Contact>
+        </ProviderContact>
+    </Distributor>    
+</root>

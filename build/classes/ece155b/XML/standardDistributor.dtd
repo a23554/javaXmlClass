@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary identification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/standardDistributor.dtd
+
+-->
+
+<!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE root SYSTEM "standardDistributor.dtd">
+
+    <root>
+    ...
+    </root>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT root (Distributor)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT Distributor (ProviderContact|Stock|Information)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT Information (CompanyAddress|CompanyConatac|CompanyName)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT CompanyName EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT CompanyConatac EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT CompanyAddress EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT Stock (StockItem)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT StockItem (Quantity|Item)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT Item (ItemPrice|ItemBrand|ItemName|ItmeID)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ItmeID #PCDATA>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ItemName #PCDATA>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ItemBrand #PCDATA>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ItemPrice #PCDATA>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT Quantity #PCDATA>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ProviderContact (Contact)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT Contact (ProviderPort&ProviderURL&ProviderName)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ProviderName #PCDATA>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ProviderURL #PCDATA>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ProviderPort #PCDATA>

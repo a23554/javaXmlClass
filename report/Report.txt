@@ -1,0 +1,205 @@
+﻿Read me File - best read on Notepad++
+Class 			: XML
+Group Member	:402530018	林哲宇
+				 400530049	郭晉晏
+				 
+Project Description:
+
+	This project settle the relationship between Distributor and Provider, which distributor can send request to provider to buy stuff.
+	
+	Distributor process -  AppStart -> Enter Distribtur name to open a xml file or create a new xml if can't find xml file relate to the name
+							-> The App automaticly create connection(This isn't authorized yet) to every ProviderContact it get from xml file
+							-> The App send Authorized request to all the Provider to check if this Distributor is authorized at Provider side
+							-> If it's not Authorized -> Drop the connection -> else keep the connection
+							-> Distributor can then select the Provider from connection list
+							-> In Need Item tab "addRow" sends out a Supply_List_Request to the selected Provider(selected from connection list)
+							-> Provider sends back a list for Distributor to add to NeedItem
+							-> After entering the quantity of each item the Distributor can send Purchase_request to Provider
+							-> Succesfully buy items -> or error occur
+						Connection Logic:
+							-> Auto Authorized with every Provider the xml contains
+							-> Display a new Frame to show uppon recieving a SupplyListRequestReply
+							-> Puts need Item into stock item uppon reciving a PurchaseRequestReply
+							
+	Provider process	-  AppStart -> Enter Provider name to open a xml file or create a new xml if can't find xml file relate to the name
+							-> The App starts listening on port.
+						Connection Logic:
+							-> Recieved AuthorizedRequest -> Check if isMember if yes send back AuthorizedRequestReply with content success else send with content failed
+							-> Recieved RequestList -> Send all the Supply in xml in RequestListReply message content
+							-> Recieved PurchaseRequest -> Add PurchaseItems into vector -> CheckOut -> Send PurchaseItemRequestReply back
+							
+	
+
+Contain Files:
+
+# Files or function ends with a "*" means it's use for debugging
+
+	Root
+	|
+	|-XML //Contains the standards of transfer in this project, with some test files(junks)
+	|	|-newXMLDocument*
+	|	|-standardAuthenticateMessage.xml
+	|	|-standardDistributor.xml	//Standard saving format for Distibutor
+	|	|-standardDistributor.dtd	//Dtd file relate to standardDistributor.xml
+	|	|-standardProvider.xml		//Standard saving format for Provider		
+	|	|-standardPurchaseXML.xml	//Standard transfer format for Purchase
+	|	|-standardRequestList.xml	//Standard transfer format for RequestList
+	|	|-testDistributor.xml*		//Debug using file
+	|	\
+	|	
+	|-Common //Contains the file that use in both Provider and Distributor
+	|	|-Common.java				//The message type use in transfering
+	|	|-Contact.java				//Contact object
+	|	|								Constructor:
+	|	|									Contact() Contact(name,url,port) Contact(name) 
+	|	|								Function:
+	|	|									toString() 	//return this object as String
+	|	|									toXML()		//return this object as well formed xml format
+	|	|-Item.java					//Item object 
+	|	|								Constructor:
+	|	|									Item() Item(id,name,brand,price) Item(id,name,brand,price,quantity)<-This should not be used 
+	|	|																										You should use StockItem(Item,quantity) instead to add quantity to Items
+	|	|								Function:
+	|	|									toString()	//return this object as String
+	|	|									toXML();	//return this object as well formed xml format
+	|	|-Message.java				//Message to send and recieve, it uses a messageParser to read recieved xmls
+	|	|								Constructor:
+	|	|									Message() Message(xml)
+	|	|								Function:
+	|	|									toString()	//return this object as String
+	|	|									toXML();	//return this object as well formed xml format
+	|	|-MessageParser.java		//Parser use to parse incoming xml format messages
+	|	|								Constructor:
+	|	|									MessageParser(xml,Message)	//xml is the recieving message, Message is the message use to save the parsing result
+	|	|								Function: Parse xml into Message object
+	|	|-StockItem.java			//StockItem contains lots of Item object inside
+	|	|								Constructor:
+	|	|									StockItem() StockItem(Item,quantity)
+	|	|								Function:
+	|	|									toString()	//return this object as String
+	|	|									toXML();	//return this object as well formed xml format
+	|	\
+	|
+	|-distributor  //Distributor App
+	|	|-common		//Includes ConnectionHandler and ConnectionListener
+	|	|	|-ConnHandler.java		//Use to control all the connections and process recieved messages
+	|	|	|							Constructor:
+	|	|	|								ConnHandler(DistributorApp)
+	|	|	|							Function:
+	|	|	|								init()						//Initial the Connection to all the provider contact, drop the connection if authorized failed
+	|	|	|								connectToProvider(Contact)	//Conact to the Contact passed in
+	|	|	|								sendAll(Message)			//Send passed in Message to all the connected Provider
+	|	|	|								removeAllconn()*			//Removed all the connection
+	|	|	|								broadcast(Message,name)		//send the Message to Provider with name
+	|	|	|								processMessage(xml,ConnListener)  //Logic to deal with different Message recieved from ConnectionListener
+	|	|	|-ConnListener.java		//Maintains the connection and sends/recieve xml string to/from Provider
+	|	|	|							Constructor:
+	|	|	|								ConnListener(ConnHandler,Socket,Contact)	//Connect to the contact and asing the listener to ConnHandler
+	|	|	|							Function:
+	|	|	|								sendMessage(Message)					  	//Sends out the Message
+	|	|	\
+	|	|
+	|	|-data			//
+	|	|	|-Distributor.java	//An storage area contains controls for Display and Connection control
+	|	|	|						Constructor:
+	|	|	|							Distributor() Ditributor(File,DistributorApp)	//Can create either a new empty Distributor or readin File to create
+	|	|	|						Function:
+	|	|	|							addResponseData(StockItem)
+	|	|	|							addStock(StockItem)
+	|	|	|							addStock(Item,quantity)	
+	|	|	|							removeStock(StockItem)
+	|	|	|							addProviderContact(Contact)
+	|	|	|							removeProviderContact(Contact)
+	|	|	|							addRow(DistributroApp)
+	|	|	|							getItemList(DistributorApp)
+	|	|	|							startMultipleMessage()
+	|	|	|							makeMessage(String)
+	|	|	|							getAllResponse(boolean)
+	|	|	|							createTestInfo()
+	|	|	|							saveto(File)
+	|	|	|							toString()	//return this object as String
+	|	|	|							toXML();	//return this object as well formed xml format
+	|	|	\
+	|	|
+	|	|-xml
+	|	|	|-DisParser.java	//
+	|	|	|						Constructor:
+	|	|	|							DisParser(File,Distributor) DisParser(xml,Distributor)	//Either read in File or xml parse it to Distributor
+	|	|	|						Function:
+	|	|	|							Sax parser, defines the StartElement and EndElement
+	|	|	|
+	|	|	|-SupplyParser.java	//
+	|	|	|						Constructor:
+	|	|	|							SupplyParser(xml,Distribtur)	//Call apon recieve a RequestList_Reply Message parse the messagecontent into Distribtur
+	|	|	|						Function:
+	|	|	|							Sax parser, defines the StartElement and EndElement
+	|	|	\
+	|	|
+	|	|-DistributorApp.java	//
+	|	|							Constructor:
+	|	|								DistributorApp(String)	//Reads the name and check if the name.xml file exists or create a new on if not exists.
+	|	|							Description:
+	|	|								Reads the xml and create distributor -> create gui -> puts the information to gui
+	|	\
+	|
+	|-Provider  //Provider App
+	|	|-common		//Includes ConnectionHandler and ConnectionListener
+	|	|	|-ConnHandler.java		//Connection logic and message recieved handling
+	|	|	|							Constructor:
+	|	|	|								ConnHandler(DistributorApp)
+	|	|	|							Function:
+	|	|	|								addUser(Socket)
+	|	|	|								removeUser(ConnListener)
+	|	|	|								broadcast(Message)*
+	|	|	|								boolean inUse()						//Check if any Distributor is currently purchasing
+	|	|	|								ConnListener findUser(String)		//Find ConnListener with DistributorName and return the ConnListener
+	|	|	|								processMessage(xml,ConnListener)	//Logic processing message
+	|	|	|								
+	|	|	|-ConnListener.java		//Maintains the connection and sends/recieve xml string to/from Provider
+	|	|	|							Constructor:
+	|	|	|								ConnListener(ConnHandler,Socket,Contact)	//Connect to the contact and asing the listener to ConnHandler
+	|	|	|							Function:
+	|	|	|								sendMessage(Message)					  	//Sends out the Message
+	|	|	\
+	|	|
+	|	|-data			//
+	|	|	|-Provider.java	//An storage area contains controls for Display and Connection
+	|	|	|						Constructor:
+	|	|	|							Distributor() Provider(File)	//Can create either a new empty Provider or readin File to create
+	|	|	|						Function:
+	|	|	|							addStock(StockItem)
+	|	|	|							addStock(Item,quantity)	
+	|	|	|							addProviderContact(Contact)
+	|	|	|							addPurchase(StockItem)				//Add an StockItem of Purchase Request
+	|	|	|							removeDistributorContact(Contact)	
+	|	|	|							checkOut()							//Checkout the purchase Item
+	|	|	|							boolean isMember(name)				//Check if the Distributor is a member
+	|	|	|							saveto(File)
+	|	|	|							toString()	//return this object as String
+	|	|	|							toXML();	//return this object as well formed xml format
+	|	|	|							createTestInfo()*					//use to create a fake Provider
+	|	|	|
+	|	|	|-DistributorContact.java*	//Abandond during debugging
+	|	|	\
+	|	|
+	|	|-xml
+	|	|	|-ProParser.java	//
+	|	|	|						Constructor:
+	|	|	|							ProParser(File,Provider) //Either read in File or xml parse it to Distributor
+	|	|	|						Function:
+	|	|	|							Sax parser, defines the StartElement and EndElement
+	|	|	|
+	|	|	|-purchaseParser.java	//
+	|	|	|						Constructor:
+	|	|	|							purchaseParser(xml,Provider)	//Call apon recieve a RequestList_Reply Message parse the messagecontent into Distribtur
+	|	|	|						Function:
+	|	|	|							Sax parser, defines the StartElement and EndElement
+	|	|	\
+	|	|
+	|	|-ProviderApp.java	//
+	|	|							Constructor:
+	|	|								ProviderApp(String)		//Reads the name and check if the name.xml file exists or create a new on if not exists.
+	|	|							Description:
+	|	|								Reads the xml and create Provider -> create gui -> puts the information to gui
+	|	\
+	

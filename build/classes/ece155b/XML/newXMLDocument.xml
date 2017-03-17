@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<root>
+    <StockItem>
+        <Item>
+            <ItemID>01</ItemID>
+            <ItemName>NOPE</ItemName>
+            <ItemBrand>SONY</ItemBrand>
+            <ItemPrice>123</ItemPrice>
+        </Item>
+        <Quantity>55</Quantity>
+    </StockItem>
+    <StockItem>
+        <Item>
+            <ItemID>02</ItemID>
+            <ItemName>115115</ItemName>
+            <ItemBrand>HTC</ItemBrand>
+            <ItemPrice>456</ItemPrice>
+        </Item>
+        <Quantity>13</Quantity>
+    </StockItem>
+    <StockItem>
+        <Item>
+            <ItemID>12 123</ItemID>
+            <ItemName>123</ItemName>
+            <ItemBrand>123</ItemBrand>
+            <ItemPrice>123</ItemPrice>
+        </Item>
+        <Quantity>123</Quantity>
+    </StockItem>
+</root>
